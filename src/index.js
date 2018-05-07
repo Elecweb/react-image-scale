@@ -1,3 +1,1 @@
-// function test(){
-//     return "r"
-// }
+export { default as ImageScale } from './image-scale';
