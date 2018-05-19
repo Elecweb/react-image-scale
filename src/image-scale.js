@@ -16,6 +16,10 @@ class ImageScale extends Component {
     containerProps: {}
   };
 
+  state = {
+    hasLoadedImage: false
+  };
+
   componentDidMount() {
     const srcImg = new Image();
     const { src: imgSrc } = this.props;
@@ -23,6 +27,9 @@ class ImageScale extends Component {
     srcImg.onload = ({ target: img }) => {
       this.scaleImage(img);
       this.imgRef.src = imgSrc;
+      this.setState({
+        hasLoadedImage: true
+      });
     };
   }
 
@@ -51,20 +58,28 @@ class ImageScale extends Component {
   };
 
   render() {
-    const { width, height, containerProps: contProps } = this.props;
-    const imgProps = {
-      ...this.props,
+    const {
+      width,
+      height,
+      containerProps: contProps = {},
+      ...restProps
+    } = this.props;
+    const { hasLoadedImage } = this.state;
+    const imgProps = hasLoadedImage ? {
+      ...restProps,
       width: undefined,
       height: undefined,
       src: undefined
-    };
+    } : {};
+
+    const containerStyle = contProps.style || {};
 
     const containerProps = {
       ...contProps,
       style: {
         width,
         height,
-        backgroundColor: 'rgba(0, 0, 0, .4)' // for test only
+        ...containerStyle
       }
     };
 
@@ -75,13 +90,13 @@ class ImageScale extends Component {
           this.containerRef = containerRef;
         }}
       >
-        <img
-          alt=""
-          {...imgProps}
-          ref={imgRef => {
-            this.imgRef = imgRef;
-          }}
-        />
+      <img
+        alt=""
+        {...imgProps}
+        ref={imgRef => {
+          this.imgRef = imgRef;
+        }}
+      />
       </div>
     );
   }
